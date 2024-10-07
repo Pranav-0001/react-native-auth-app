@@ -4,6 +4,10 @@ import { useEffect } from 'react';
 import { TamaguiProvider } from 'tamagui';
 
 import config from '../tamagui.config';
+import { Provider } from 'react-redux';
+import store from "./(redux)/store"
+import { QueryClientProvider } from '@tanstack/react-query';
+import queryClient from "./(services)/queryClient";
 
 export default function Layout() {
   const [loaded] = useFonts({
@@ -21,7 +25,11 @@ export default function Layout() {
 
   return (
     <TamaguiProvider config={config}>
+      <Provider store={store}>
+      <QueryClientProvider client={queryClient}>
       <Stack />
+      </QueryClientProvider>
+      </Provider>
     </TamaguiProvider>
   );
 }
