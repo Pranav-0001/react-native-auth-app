@@ -48,12 +48,10 @@ export default function Home() {
           <TouchableOpacity style={styles.button} onPress={() => router.push('/auth/login')}>
             <Text style={styles.buttonText}>Login</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={() => router.push('/about')}>
-            <Text style={styles.buttonText}>about</Text>
-          </TouchableOpacity>
-          {/* <TouchableOpacity style={styles.button} onPress={() => router.push('/auth/register')}>
+
+          <TouchableOpacity style={styles.button} onPress={() => router.push('/auth/register')}>
             <Text style={styles.buttonText}>Register</Text>
-          </TouchableOpacity> */}
+          </TouchableOpacity>
         </View>
       </View>
     </>
