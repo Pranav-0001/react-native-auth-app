@@ -4,9 +4,10 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { useRouter } from 'expo-router';
 import { useMutation } from '@tanstack/react-query';
-import { loginUser } from '../(services)/api/api';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { loginAction } from '../(redux)/authSlice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import useLoginMutation from '../(services)/api/loginMutation';
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Required'),
@@ -15,12 +16,15 @@ const LoginSchema = Yup.object().shape({
 
 export default function Login() {
   const router = useRouter();
-  //dispatch
   const dispatch = useDispatch();
-  const mutation = useMutation({
-    mutationFn: loginUser,
-    mutationKey: ['login'],
+  const loginMutation = useLoginMutation({
+    onSuccess: (data: any) => {
+      dispatch(loginAction(data?.data));
+      router.replace('/tabs/profile');
+    },
+    onError: () => {},
   });
+
   interface AuthState {
     user: {
       name: string;
@@ -28,36 +32,30 @@ export default function Login() {
     };
     isAuthenticated: boolean;
   }
-  console.log(mutation);
   interface RootState {
     auth: AuthState;
   }
-  const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
-  const user = useTypedSelector((state) => state.auth.user);
+
   useEffect(() => {
-    if (user) {
-      router.push('/');
-    }
+    const fetchUserInfo = async () => {
+      try {
+        const userInfo = await AsyncStorage.getItem('userInfo');
+        if (userInfo) router.push('/tabs/profile');
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+      }
+    };
+    fetchUserInfo();
   }, []);
-  console.log('user', user);
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
       <Formik
-        initialValues={{ email: 'atom@gmail.com', password: '123456' }}
+        initialValues={{ email: '', password: '' }}
         validationSchema={LoginSchema}
         onSubmit={(values) => {
           console.log(values);
-          mutation
-            .mutateAsync(values)
-            .then((data) => {
-              console.log('data', data);
-              dispatch(loginAction(data));
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-          router.push('/');
+          loginMutation.mutate(values);
         }}>
         {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
           <View style={styles.form}>

@@ -2,9 +2,10 @@ import React from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 
-import { useRouter } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { logoutAction } from '../(redux)/authSlice';
 import ProtectedRoute from '../../components/ProtectedRoute';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Profile() {
   const router = useRouter();
@@ -24,11 +25,13 @@ export default function Profile() {
 
   const handleLogout = () => {
     dispatch(logoutAction());
-    router.push('/auth/login');
+    router.replace('/auth/login');
   };
 
+  console.log(AsyncStorage.getItem('userInfo'), '<><><><><');
   return (
     <ProtectedRoute>
+      <Stack.Screen options={{ headerShown: false }} />
       <View style={styles.container}>
         <Text style={styles.title}>User Profile</Text>
         {user ? (

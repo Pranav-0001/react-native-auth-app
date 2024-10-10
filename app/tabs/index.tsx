@@ -2,10 +2,12 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Fontisto from '@expo/vector-icons/Fontisto';
+import { Stack } from 'expo-router';
 
 const TabHome = () => {
   return (
     <View style={styles.container}>
+      <Stack.Screen options={{ headerShown: false }} />
       <Text style={styles.title}>Welcome to Authentication</Text>
       <Text style={styles.subtitle}>Technologies used:</Text>
       <View style={styles.techList}>

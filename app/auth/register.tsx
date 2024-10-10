@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -9,10 +9,12 @@ import {
 } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { useRouter } from 'expo-router';
+import { useRouter, router } from 'expo-router';
 import { useMutation } from '@tanstack/react-query';
 import { loginAction } from '../(redux)/authSlice';
 import useRegisterMutation from '../(services)/api/registerMutation';
+import { useDispatch } from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const RegisterSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Required'),
@@ -23,19 +25,32 @@ const RegisterSchema = Yup.object().shape({
 });
 
 export default function Register() {
-  const router = useRouter();
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const dispatch = useDispatch();
   const registerMutation = useRegisterMutation({
-    onSuccess: (data) => {
+    onSuccess: (data: any) => {
       console.log({ data });
+      dispatch(loginAction(data?.data));
+      router.replace('/tabs/profile');
     },
     onError: (data: any) => {
       console.log('Error data', data);
       setErrorMessage(data?.message);
     },
   });
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const userInfo = await AsyncStorage.getItem('userInfo');
+        if (userInfo) router.push("/tabs/profile")
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+      }
+    };
+    fetchUserInfo();
+  }, []);
 
   return (
     <View style={styles.container}>
