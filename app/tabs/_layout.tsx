@@ -4,7 +4,11 @@ export default function RootLayout() {
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
-      <Tabs>
+      <Tabs
+        screenOptions={{
+          tabBarActiveTintColor: 'black',
+          tabBarInactiveTintColor: '#808080',
+        }}>
         <Tabs.Screen
           name="index"
           options={{
