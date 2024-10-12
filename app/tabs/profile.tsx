@@ -32,7 +32,7 @@ export default function Profile() {
     dispatch(logoutAction());
     router.replace('/auth/login');
   };
-
+  console.log({ user });
   return (
     <>
       <Stack.Screen
@@ -70,9 +70,8 @@ export default function Profile() {
         </YStack>
         <YStack flex={0.6}>
           <Text fontSize={18} fontWeight="bold">
-            Pranav
+            {user?.email?.split("@")[0]}
           </Text>
-          <Button width={200} onPress={()=>router.push("/profileEdit")}>Edit Profile</Button>
         </YStack>
       </XStack>
       <ScrollView
@@ -82,17 +81,18 @@ export default function Profile() {
         <YStack>
           <XStack paddingVertical="$2" paddingHorizontal="$4" space alignItems="center">
             <Fontisto name="email" size={36} color="black" />
-            <Text fontSize={16}>pranavkpz12345@gmail.com</Text>
+            <Text fontSize={16}>{user?.email}</Text>
           </XStack>
           <XStack paddingVertical="$2" paddingHorizontal="$4" space alignItems="center">
             <Feather name="phone" size={36} color="black" />
             <Text fontSize={16}>+91-9846071341</Text>
           </XStack>
-          <TouchableOpacity  onPress={()=>handleLogout()}>
-          <XStack paddingVertical="$2" paddingHorizontal="$4" space alignItems="center">
+          <TouchableOpacity onPress={() => handleLogout()}>
+            <XStack paddingVertical="$2" paddingHorizontal="$4" space alignItems="center">
               <Ionicons name="exit-outline" size={36} color="red" />
               <Text fontSize={16}>Logout</Text>
-          </XStack></TouchableOpacity>
+            </XStack>
+          </TouchableOpacity>
         </YStack>
       </ScrollView>
     </>

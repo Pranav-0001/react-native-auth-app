@@ -6,10 +6,14 @@ import { Button } from '~/components/Button';
 import { Container } from '~/components/Container';
 import { ScreenContent } from '~/components/ScreenContent';
 import * as React from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useDispatch } from 'react-redux';
+import { setUser } from './(redux)/authSlice';
 
 export default function Home() {
   const video = React.useRef(null);
   const [status, setStatus] = React.useState({});
+  const dispatch = useDispatch();
   function greet() {
     const time = new Date();
     const hours = time.getHours();
@@ -24,6 +28,20 @@ export default function Home() {
       return 'Good Evening';
     }
   }
+  React.useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const userInfo = await AsyncStorage.getItem('userInfo');
+        if (userInfo) {
+          const user = JSON.parse(userInfo);
+          dispatch(setUser(user))
+        }
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+      }
+    };
+    fetchUserInfo();
+  }, []);
   return (
     <>
       <Stack.Screen options={{ title: 'Home', headerShown: false }} />
